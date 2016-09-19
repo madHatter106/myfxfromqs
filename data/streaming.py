@@ -1,9 +1,6 @@
-from __future__ import print_function
-
 from decimal import Decimal, getcontext, ROUND_HALF_DOWN
 import logging
 import json
-
 import requests
 
 from qsforex.event.event import TickEvent
@@ -12,12 +9,12 @@ from qsforex.data.price import PriceHandler
 
 class StreamingForexPrices(PriceHandler):
     def __init__(
-        self, domain, access_token, 
+        self, domain, access_token,
         account_id, pairs, events_queue
     ):
         self.domain = domain
         self.access_token = access_token
-        self.account_id = account_id
+        self.accountId = account_id
         self.events_queue = events_queue
         self.pairs = pairs
         self.prices = self._set_up_prices_dict()
@@ -47,19 +44,25 @@ class StreamingForexPrices(PriceHandler):
             s = requests.Session()
             url = "https://" + self.domain + "/v1/prices"
             headers = {'Authorization' : 'Bearer ' + self.access_token}
-            params = {'instruments' : pair_list, 'accountId' : self.account_id}
+            params = {'instruments' : pair_list, 'accountId' : self.accountId}
             req = requests.Request('GET', url, headers=headers, params=params)
             pre = req.prepare()
             resp = s.send(pre, stream=True, verify=False)
             return resp
         except Exception as e:
             s.close()
-            print("Caught exception when connecting to stream\n" + str(e))
+            self.logger.error("Caught exception when connecting to stream\n"
+                              + str(e))
 
     def stream_to_queue(self):
         response = self.connect_to_stream()
         if response.status_code != 200:
+            if response.status_code == 401:
+                self.logger.error("Access unauthorized. Verify credentials.")
+            elif response.status_code == 400:
+                self.logger.error("Malformed request. Verify payload.")
             return
+
         for line in response.iter_lines(1):
             if line:
                 try:
@@ -72,7 +75,7 @@ class StreamingForexPrices(PriceHandler):
                     return
                 if "instrument" in msg or "tick" in msg:
                     self.logger.debug(msg)
-                    getcontext().rounding = ROUND_HALF_DOWN 
+                    getcontext().rounding = ROUND_HALF_DOWN
                     instrument = msg["tick"]["instrument"].replace("_", "")
                     time = msg["tick"]["time"]
                     bid = Decimal(str(msg["tick"]["bid"])).quantize(

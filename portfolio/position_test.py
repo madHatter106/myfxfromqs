@@ -1,10 +1,9 @@
 from decimal import Decimal
 import unittest
-
 from position import Position
 
 
-class TickerMock(object):
+class TickerMock():
     """
     A mock object that allows a representation of the
     ticker/pricing handler.
@@ -36,7 +35,7 @@ class TestLongGBPUSDPosition(unittest.TestCase):
         units = Decimal("2000")
         ticker = TickerMock()
         self.position = Position(
-            home_currency, position_type, 
+            home_currency, position_type,
             currency_pair, units, ticker
         )
 
@@ -85,7 +84,7 @@ class TestShortGBPUSDPosition(unittest.TestCase):
         units = Decimal("2000")
         ticker = TickerMock()
         self.position = Position(
-            home_currency, position_type, 
+            home_currency, position_type,
             currency_pair, units, ticker
         )
 
@@ -138,7 +137,7 @@ class TestLongEURUSDPosition(unittest.TestCase):
         units = Decimal("2000")
         ticker = TickerMock()
         self.position = Position(
-            home_currency, position_type, 
+            home_currency, position_type,
             currency_pair, units, ticker
         )
 
@@ -188,7 +187,7 @@ class TestLongEURUSDPosition(unittest.TestCase):
         units = Decimal("2000")
         ticker = TickerMock()
         self.position = Position(
-            home_currency, position_type, 
+            home_currency, position_type,
             currency_pair, units, ticker
         )
 
