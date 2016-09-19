@@ -1,5 +1,4 @@
 import os, os.path
-
 import pandas as pd
 import matplotlib
 try:
@@ -8,7 +7,6 @@ except:
     pass
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 from qsforex.settings import OUTPUT_RESULTS_DIR
 
 
@@ -31,7 +29,7 @@ if __name__ == "__main__":
     # Plot three charts: Equity curve, period returns, drawdowns
     fig = plt.figure()
     fig.patch.set_facecolor('white')     # Set the outer colour to white
-    
+
     # Plot the equity curve
     ax1 = fig.add_subplot(311, ylabel='Portfolio value')
     equity["Equity"].plot(ax=ax1, color=sns.color_palette()[0])

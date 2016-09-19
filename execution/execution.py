@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from abc import ABCMeta, abstractmethod
 try:
     import httplib
@@ -14,7 +12,7 @@ import urllib3
 urllib3.disable_warnings()
 
 
-class ExecutionHandler(object):
+class ExecutionHandler():
     """
     Provides an abstract base class to handle all execution in the
     backtesting and live trading system.
@@ -30,7 +28,7 @@ class ExecutionHandler(object):
         raise NotImplementedError("Should implement execute_order()")
 
 
-class SimulatedExecution(object):
+class SimulatedExecution():
     """
     Provides a simulated execution handling environment. This class
     actually does nothing - it simply receives an order to execute.
@@ -66,10 +64,9 @@ class OANDAExecutionHandler(ExecutionHandler):
             "side" : event.side
         })
         self.conn.request(
-            "POST", 
-            "/v1/accounts/%s/orders" % str(self.account_id), 
+            "POST",
+            "/v1/accounts/%s/orders" % str(self.account_id),
             params, headers
         )
         response = self.conn.getresponse().read().decode("utf-8").replace("\n","").replace("\t","")
         self.logger.debug(response)
-        
